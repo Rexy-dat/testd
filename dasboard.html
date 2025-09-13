@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #0f0f0f, #1a1a2e, #000);
+      color: #fff;
+      min-height: 100vh;
+    }
+
+    /* Navbar */
+    .navbar {
+      background: rgba(0,0,0,0.7);
+      padding: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      backdrop-filter: blur(5px);
+    }
+
+    .menu-btn {
+      font-size: 24px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      color: white;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: -250px;
+      width: 250px;
+      height: 100%;
+      background: #111;
+      padding-top: 60px;
+      transition: 0.3s;
+      z-index: 1000;
+    }
+
+    .sidebar.active {
+      left: 0;
+    }
+
+    .sidebar a {
+      display: block;
+      padding: 12px;
+      color: white;
+      text-decoration: none;
+      transition: 0.2s;
+      cursor: pointer;
+    }
+
+    .sidebar a:hover {
+      background: #444;
+    }
+
+    /* Content */
+    .content {
+      padding: 20px;
+      text-align: center;
+    }
+
+    h1 {
+      margin-top: 20px;
+      font-size: 28px;
+    }
+
+    /* Dashboard cards */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-top: 30px;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.05);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+      backdrop-filter: blur(10px);
+      transition: transform 0.3s;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    .card h2 {
+      font-size: 22px;
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      font-size: 18px;
+      color: #a8ffb3;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <div class="navbar">
+    <button class="menu-btn" onclick="toggleMenu()">☰</button>
+    <h2>Dashboard</h2>
+  </div>
+
+  <!-- Sidebar -->
+  <div id="sidebar" class="sidebar">
+    <a onclick="showPage('home')">🏠 Home</a>
+    <a onclick="showPage('role')">👤 Create Role</a>
+    <a onclick="showPage('settings')">⚙️ Settings</a>
+    <a onclick="showPage('bug')">💣 Bug Tools</a>
+    <a href="login.html">🚪 Logout</a>
+  </div>
+
+  <!-- Content -->
+  <div class="content">
+    <!-- Home -->
+    <div id="homePage">
+      <h1>Selamat Datang di Dashboard 🎉</h1>
+      <p>Monitoring sistem & aktivitas user</p>
+
+      <div class="cards">
+        <div class="card">
+          <h2>🖥️ System Server</h2>
+          <p id="serverStatus">Checking...</p>
+        </div>
+        <div class="card">
+          <h2>📡 Active Sender</h2>
+          <p id="activeSender">0</p>
+        </div>
+        <div class="card">
+          <h2>👥 User Active</h2>
+          <p id="activeUsers">0</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Create Role -->
+    <div id="rolePage" class="hidden">
+      <h1>Create Role</h1>
+      <form id="roleForm">
+        <select id="roleSelect" required>
+          <option value="">-- Pilih Role --</option>
+          <option value="member">Member</option>
+          <option value="reseller">Reseller</option>
+          <option value="vvip">VVIP</option>
+          <option value="owner">Owner</option>
+        </select><br>
+        <input type="text" id="newUsername" placeholder="Username" required><br>
+        <input type="password" id="newPassword" placeholder="Password" required><br>
+        <input type="number" id="duration" placeholder="Durasi (hari)" required><br>
+        <button type="submit">Create</button>
+      </form>
+    </div>
+
+    <!-- Settings -->
+    <div id="settingsPage" class="hidden">
+      <h1>Settings</h1>
+      <form id="settingsForm">
+        <input type="text" placeholder="Change Username"><br>
+        <input type="password" placeholder="Change Password"><br>
+        <button type="submit">Save Settings</button>
+      </form>
+    </div>
+
+    <!-- Bug Tools -->
+    <div id="bugPage" class="hidden">
+      <h1>Bug Tools</h1>
+      <form id="bugForm">
+        <input type="number" placeholder="Target (ex: 628xxxx)" required><br>
+        <select required>
+          <option value="">-- Select Bug Type --</option>
+          <option>Crash</option>
+          <option>Infinity</option>
+          <option>Delay</option>
+          <option>Hard</option>
+        </select><br>
+        <button type="submit">🚀 Send Bug</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function toggleMenu() {
+      document.getElementById("sidebar").classList.toggle("active");
+    }
+
+    function showPage(page) {
+      document.querySelectorAll(".content > div").forEach(div => {
+        div.classList.add("hidden");
+      });
+      document.getElementById(page + "Page").classList.remove("hidden");
+      toggleMenu();
+    }
+
+    // Dummy server stats (bisa disambungkan ke backend API)
+    function updateStats() {
+      document.getElementById("serverStatus").innerText = "✅ Online";
+      document.getElementById("activeSender").innerText = Math.floor(Math.random() * 5); 
+      document.getElementById("activeUsers").innerText = Math.floor(Math.random() * 20);
+    }
+
+    setInterval(updateStats, 3000); // update setiap 3 detik
+    updateStats();
+
+    // Form handlers
+    document.getElementById("roleForm")?.addEventListener("submit", function(e) {
+      e.preventDefault();
+      alert("Role berhasil dibuat untuk user: " + document.getElementById("newUsername").value);
+    });
+
+    document.getElementById("settingsForm")?.addEventListener("submit", function(e) {
+      e.preventDefault();
+      alert("Settings berhasil disimpan!");
+    });
+
+    document.getElementById("bugForm")?.addEventListener("submit", function(e) {
+      e.preventDefault();
+      alert("Bug berhasil dikirim 🚀");
+    });
+  </script>
+</body>
+</html>
